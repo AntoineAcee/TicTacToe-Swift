@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    
+    func applicationDidFinishLaunching(_ application: UIApplication) {
+        FirebaseApp.configure()
+    }
 }
 

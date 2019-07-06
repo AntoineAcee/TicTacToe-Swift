@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ViewController: UIViewController {
 
@@ -16,6 +17,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         updateState()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        checkConnection()
+    }
+    
+    func checkConnection() {
+        if Auth.auth().currentUser == nil {
+            let signInViewController = SignInViewController.instantiate()
+            self.present(signInViewController, animated: true)
+        }
     }
 
     @IBAction func buttonTapped(sender: UIButton) {
