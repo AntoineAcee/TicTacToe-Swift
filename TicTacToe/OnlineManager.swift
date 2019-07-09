@@ -9,13 +9,19 @@
 import Foundation
 import Firebase
 
+protocol OnlineManagerDelegate {
+    func didUpdate()
+}
+
 class OnlineManager {
     static let shared = OnlineManager()
-    var player: Player?
+    var player1: Player?
+    var player2: Player?
+    var delegate: OnlineManagerDelegate?
     
     func setPlayerInfo(userId: String, callback: @escaping () -> ()) {
         Firestore.firestore().collection("users").document(userId).addSnapshotListener { (snapshot, error) in
-            self.player = Player(snapshot: snapshot)
+            self.player1 = Player(snapshot: snapshot)
             callback()
         }
     }

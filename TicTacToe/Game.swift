@@ -14,6 +14,10 @@ enum GameStatus {
     case finished
 }
 
+protocol GameDelegate {
+    func didUpdate()
+}
+
 class Game {
     var gameValues: [[GameValue]]
     var players: [Player]
@@ -25,6 +29,7 @@ class Game {
             self.status = self.winner == nil ? .playing : .finished
         }
     }
+    var delegate: GameDelegate?
     
     private let winningBoards = [
         // HORIZONTAL
@@ -60,6 +65,7 @@ class Game {
         if checkEndGame() {
             self.status = .finished
         }
+        self.delegate?.didUpdate()
     }
     
     func reset() {
@@ -68,6 +74,7 @@ class Game {
                           [.nothing, .nothing, .nothing]]
         self.winner = nil
         self.status = .idle
+        self.delegate?.didUpdate()
     }
     
     private func checkWinner() -> Player? {

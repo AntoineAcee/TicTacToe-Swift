@@ -37,16 +37,19 @@ class GameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setGameInfo()
+        initGame()
         gameCollectionView.delegate = self
         gameCollectionView.dataSource = self
         
         gameCollectionView.reloadData()
     }
     
+    func initGame() {
+        game.delegate = self
+    }
+    
     @IBAction func onReset(_ sender: Any) {
         self.game.reset()
-        self.setGameInfo()
         self.gameCollectionView.reloadData()
     }
     
@@ -83,7 +86,6 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         game.play(row: indexPath.section, col: indexPath.row)
-        self.setGameInfo()
         collectionView.reloadData()
     }
 }
@@ -91,5 +93,11 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
 extension GameViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 0, left: 0, bottom: 5, right: 0)
+    }
+}
+
+extension GameViewController: GameDelegate {
+    func didUpdate() {
+        self.setGameInfo()
     }
 }
