@@ -42,11 +42,13 @@ class SignInViewController: UIViewController {
         guard let email = emailText.text, let password = passwordText.text else { return }
         loader.startAnimating()
         Auth.auth().signIn(withEmail: email, password: password) { (authResult, error) in
-            self.loader.stopAnimating()
             if let err = error {
+                self.loader.stopAnimating()
                 self.showAlert(title: "Error", message: err.localizedDescription)
-            } else {
-                self.dismiss(animated: true)
+            } else if let userId = authResult?.user.uid {
+                OnlineManager.shared.setPlayerInfo(userId: userId, callback: {
+                    self.dismiss(animated: true)
+                })
             }
         }
     }
@@ -55,16 +57,19 @@ class SignInViewController: UIViewController {
         guard let email = emailText.text, let password = passwordText.text else { return }
         loader.startAnimating()
         Auth.auth().createUser(withEmail: email, password: password) { (authResult, error) in
-            self.loader.stopAnimating()
             if let err = error {
+                self.loader.stopAnimating()
                 self.showAlert(title: "Error", message: err.localizedDescription)
-            } else {
-                self.db.collection("users").addDocument(data: [
+            } else if let userId = authResult?.user.uid {
+                self.db.collection("users").document(userId).setData([
                     "email": email,
                     "wins": 0,
                     "looses": 0,
-                    ])
-                self.dismiss(animated: true)
+                    ], completion: { (error) in
+                        OnlineManager.shared.setPlayerInfo(userId: userId, callback: {
+                            self.dismiss(animated: true)
+                        })
+                })
             }
         }
     }

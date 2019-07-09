@@ -18,25 +18,25 @@ class TicTacToe {
         case xWin = "X wins"
         case oWin = "O wins"
     }
+    
+    private let winningBoard = [
+        [[1,1,1],[0,0,0],[0,0,0]],
+        [[0,0,0],[1,1,1],[0,0,0]],
+        [[0,0,0],[0,0,0],[1,1,1]],
+        
+        [[1,0,0],[1,0,0], [1,0,0]],
+        [[0,1,0],[0,1,0], [0,1,0]],
+        [[0,0,1],[0,0,1], [0,0,1]],
+        
+        [[1,0,0],[0,1,0], [0,0,1]],
+        [[0,0,1],[0,1,0], [1,0,0]],
+    ]
 
     public var board = [[Int]](repeating: [Int](repeating: 0, count: 3), count: 3)
 
     public func resetBoard() {
         board = [[Int]](repeating: [Int](repeating: 0, count: 3), count: 3)
     }
-
-    private let winningBoard = [
-                                [[1,1,1],[0,0,0],[0,0,0]],
-                                [[0,0,0],[1,1,1],[0,0,0]],
-                                [[0,0,0],[0,0,0],[1,1,1]],
-
-                                [[1,0,0],[1,0,0], [1,0,0]],
-                                [[0,1,0],[0,1,0], [0,1,0]],
-                                [[0,0,1],[0,0,1], [0,0,1]],
-
-                                [[1,0,0],[0,1,0], [0,0,1]],
-                                [[0,0,1],[0,1,0], [1,0,0]],
-                                ]
 
     public func checkStatus() -> GameState {
         if checkForWinner(val: 1) { // x

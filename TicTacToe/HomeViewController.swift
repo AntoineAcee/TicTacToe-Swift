@@ -13,23 +13,22 @@ class HomeViewController: UIViewController {
 
     @IBOutlet weak var ratioLabel: UILabel!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
     @IBAction func playOnline(_ sender: Any) {
         if !self.checkConnection() { return }
-        self.present(GameViewController.instantiate(gameMode: .online), animated: true)
+        let onlineGame = Game(players: [OfflineManager.shared.player1, OfflineManager.shared.player2], mode: GameMode.online)
+        self.present(GameViewController.instantiate(game: onlineGame), animated: true)
     }
     
     @IBAction func playOffline(_ sender: Any) {
-        self.present(GameViewController.instantiate(gameMode: .offline), animated: true)
+        let offlineGame = Game(players: [OfflineManager.shared.player1, OfflineManager.shared.player2], mode: GameMode.offline)
+        self.present(GameViewController.instantiate(game: offlineGame), animated: true)
     }
     
     func checkConnection() -> Bool {
-        if Auth.auth().currentUser == nil {
+        if OnlineManager.shared.player == nil {
             let signInViewController = SignInViewController.instantiate()
             self.present(signInViewController, animated: true)
             return false

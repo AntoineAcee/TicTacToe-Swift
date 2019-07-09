@@ -22,48 +22,68 @@ enum GameValue {
 class GameViewController: UIViewController {
     
     @IBOutlet weak var gameCollectionView: UICollectionView!
+    @IBOutlet weak var gameInfoLabel: UILabel!
     
-    var gameMode: GameMode!
-    var gameValues: [[GameValue]] = [
-        [.player1, .player2, .nothing],
-        [.nothing, .nothing, .nothing],
-        [.nothing, .nothing, .nothing]
-    ]
     
-    static func instantiate(gameMode: GameMode) -> GameViewController {
+    var game: Game!
+    
+    static func instantiate(game: Game) -> GameViewController {
         let storyBoard = UIStoryboard(name: "Main", bundle: nil)
         let gameController = storyBoard.instantiateViewController(withIdentifier: "GameViewController") as! GameViewController
-        gameController.gameMode = gameMode
+        gameController.game = game
         return gameController
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setGameInfo()
         gameCollectionView.delegate = self
         gameCollectionView.dataSource = self
         
         gameCollectionView.reloadData()
     }
+    
+    @IBAction func onReset(_ sender: Any) {
+        self.game.reset()
+        self.setGameInfo()
+        self.gameCollectionView.reloadData()
+    }
+    
+    @IBAction func onClose(_ sender: Any) {
+        self.dismiss(animated: true)
+    }
+    
+    func setGameInfo() {
+        self.gameInfoLabel.text = "\(game.playerTurn?.email ?? "") turn"
+        if game.status == .finished {
+            if let winner = game.winner {
+                self.gameInfoLabel.text = "\(winner.email) win"
+            } else {
+                self.gameInfoLabel.text = "Draw"
+            }
+        }
+    }
 }
 
 extension GameViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return gameValues.count
+        return game.gameValues.count
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return gameValues[section].count
+        return game.gameValues[section].count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell:GameValueCell = collectionView.dequeueReusableCell(withReuseIdentifier: "GameValueCell", for: indexPath) as! GameValueCell
-        cell.setup(gameValue: gameValues[indexPath.section][indexPath.row])
+        cell.setup(gameValue: game.gameValues[indexPath.section][indexPath.row])
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        gameValues[indexPath.section][indexPath.row] = .player1
+        game.play(row: indexPath.section, col: indexPath.row)
+        self.setGameInfo()
         collectionView.reloadData()
     }
 }
