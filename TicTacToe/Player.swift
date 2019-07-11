@@ -15,6 +15,7 @@ struct Player {
     var wins: Int
     var looses: Int
     var gameValue: GameValue
+    var ready : Bool = true
     
     init(snapshot: DocumentSnapshot?) {
         self.id = snapshot?.documentID ?? "1"
@@ -30,5 +31,23 @@ struct Player {
         self.wins = wins
         self.looses = looses
         self.gameValue = gameValue
+    }
+    
+    init(json : [String:Any]){
+        self.id = json["id"] as? String ?? "1"
+        self.email = json["email"] as? String ?? "Player 1"
+        self.ready = json["ready"] as? Bool ?? false
+        self.wins = 0
+        self.looses = 0
+        self.gameValue = GameValue(rawValue: json["gameValue"] as? String ?? "") ?? .player1
+    }
+    
+    func toJson() -> [String:Any] {
+        return [
+            "id" : id,
+            "email" : email,
+            "ready" : ready,
+            "gameValue" : gameValue.rawValue,
+        ]
     }
 }

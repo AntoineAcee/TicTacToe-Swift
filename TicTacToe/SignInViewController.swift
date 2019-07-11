@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 class SignInViewController: UIViewController {
-
+    
     
     @IBOutlet weak var loader: UIActivityIndicatorView!
     @IBOutlet weak var emailText: UITextField!
@@ -24,7 +24,7 @@ class SignInViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         // Do any additional setup after loading the view.
     }
     
@@ -46,7 +46,7 @@ class SignInViewController: UIViewController {
                 self.loader.stopAnimating()
                 self.showAlert(title: "Error", message: err.localizedDescription)
             } else if let userId = authResult?.user.uid {
-                OnlineManager.shared.setPlayerInfo(userId: userId, callback: {
+                UserManager.shared.setUserInfo(userId: userId, callback: {
                     self.dismiss(animated: true)
                 })
             }
@@ -66,7 +66,7 @@ class SignInViewController: UIViewController {
                     "wins": 0,
                     "looses": 0,
                     ], completion: { (error) in
-                        OnlineManager.shared.setPlayerInfo(userId: userId, callback: {
+                        UserManager.shared.setUserInfo(userId: userId, callback: {
                             self.dismiss(animated: true)
                         })
                 })
@@ -85,5 +85,5 @@ class SignInViewController: UIViewController {
         }
     }
     
-
+    
 }

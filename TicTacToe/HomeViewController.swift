@@ -18,8 +18,9 @@ class HomeViewController: UIViewController {
     }
     @IBAction func playOnline(_ sender: Any) {
         if !self.checkConnection() { return }
-        let onlineGame = Game(players: [], mode: GameMode.online)
-        self.present(GameViewController.instantiate(game: onlineGame), animated: true)
+        UserManager.shared.createOrJoinGame { (game) in
+            self.present(GameViewController.instantiate(game: game), animated: true)
+        }
     }
     
     @IBAction func playOffline(_ sender: Any) {
@@ -28,7 +29,7 @@ class HomeViewController: UIViewController {
     }
     
     func checkConnection() -> Bool {
-        if OnlineManager.shared.player1 == nil {
+        if UserManager.shared.user == nil {
             let signInViewController = SignInViewController.instantiate()
             self.present(signInViewController, animated: true)
             return false

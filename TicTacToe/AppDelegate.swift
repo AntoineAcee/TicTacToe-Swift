@@ -16,6 +16,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationDidFinishLaunching(_ application: UIApplication) {
         FirebaseApp.configure()
+        
+        if let currentUser = Auth.auth().currentUser {
+            UserManager.shared.setUserInfo(userId: currentUser.uid) {}
+        }
+        
     }
 }
 

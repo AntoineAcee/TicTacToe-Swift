@@ -8,22 +8,22 @@
 
 import UIKit
 
-enum GameMode {
-    case online
-    case offline
+enum GameMode : String {
+    case online = "online"
+    case offline = "offline"
 }
 
-enum GameValue {
-    case nothing
-    case player1
-    case player2
+enum GameValue : String {
+    case nothing = " "
+    case player1 = "1"
+    case player2 = "2"
 }
 
 class GameViewController: UIViewController {
     
     @IBOutlet weak var gameCollectionView: UICollectionView!
     @IBOutlet weak var gameInfoLabel: UILabel!
-    
+    @IBOutlet weak var waitLabel: UILabel!
     
     var game: Game!
     
@@ -36,7 +36,7 @@ class GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         initGame()
         gameCollectionView.delegate = self
         gameCollectionView.dataSource = self
@@ -46,6 +46,11 @@ class GameViewController: UIViewController {
     
     func initGame() {
         game.delegate = self
+        game.initGame()
+    }
+    
+    func setWaitLabel() {
+        self.waitLabel.isHidden = self.game.players.count >= 2
     }
     
     @IBAction func onReset(_ sender: Any) {
@@ -54,6 +59,7 @@ class GameViewController: UIViewController {
     }
     
     @IBAction func onClose(_ sender: Any) {
+        game.deleteGame()
         self.dismiss(animated: true)
     }
     
@@ -91,13 +97,23 @@ extension GameViewController: UICollectionViewDataSource, UICollectionViewDelega
 }
 
 extension GameViewController: UICollectionViewDelegateFlowLayout {
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 0, bottom: 5, right: 0)
+        return UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 0)
     }
 }
 
 extension GameViewController: GameDelegate {
     func didUpdate() {
+        self.gameCollectionView.reloadData()
         self.setGameInfo()
+        self.setWaitLabel()
+    }
+    
+    func didClose() {
+        let closeAction = UIAlertAction(title: "Ok", style: .default) { (action) in
+            self.dismiss(animated: true)
+        }
+        self.showAlert(title: "The opponent has left the game", message: "Your game will be closed too", actions: [closeAction])
     }
 }
